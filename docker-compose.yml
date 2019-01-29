@@ -1,0 +1,9 @@
+version: '3'
+services:
+  rtmp_restreamer:
+    build:
+      context: .
+    environment:
+      RTMP_PUBLISH_KEY: secret
+    ports:
+      - 1935:1935

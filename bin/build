@@ -1,0 +1,2 @@
+docker build -t donaldpiret/rtmp-restreamer:latest .
+docker push donaldpiret/rtmp-restreamer:latest

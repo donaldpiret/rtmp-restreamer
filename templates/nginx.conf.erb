@@ -1,0 +1,41 @@
+daemon off;
+
+error_log logs/error.log debug;
+
+rtmp_auto_push on;
+worker_processes  1;
+
+events {
+  worker_connections 1024;
+}
+
+rtmp {
+  server {
+    listen 1935;
+    listen [::]:1935 ipv6only=on;
+    chunk_size 4096;
+
+    application live {
+      live on;
+      on_publish http://localhost/auth;
+      notify_method get;
+      record off;
+
+      <% ENV['RTMP_FORWARDING_URLS'].split(',').each do |push_url| %>
+        push <%= push_url&.strip %>
+      <% end %>
+    }
+  }
+}
+
+http {
+  server {
+    listen 80;
+    location /auth {
+      if ($arg_psk = '<%= ENV['RTMP_PUBLISH_KEY'] %>') {
+        return 201;
+      }
+      return 401;
+    }
+  }
+}
